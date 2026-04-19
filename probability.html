@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Probability — ADHD Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e17;
+    --card: #1a1830;
+    --yellow: #ffd166;
+    --pink: #ef476f;
+    --mint: #06d6a0;
+    --blue: #118ab2;
+    --purple: #9b5de5;
+    --orange: #f77f00;
+    --white: #fffffe;
+    --text: #d4d0e8;
+  }
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+background: var(–bg);
+font-family: ‘Nunito’, sans-serif;
+color: var(–white);
+min-height: 100vh;
+overflow-x: hidden;
+}
+
+/* floating background blobs */
+body::before {
+content: ‘’;
+position: fixed;
+top: -200px; left: -200px;
+width: 600px; height: 600px;
+background: radial-gradient(circle, rgba(155,93,229,0.15) 0%, transparent 70%);
+pointer-events: none;
+z-index: 0;
+}
+body::after {
+content: ‘’;
+position: fixed;
+bottom: -200px; right: -200px;
+width: 600px; height: 600px;
+background: radial-gradient(circle, rgba(6,214,160,0.12) 0%, transparent 70%);
+pointer-events: none;
+z-index: 0;
+}
+
+.container {
+max-width: 900px;
+margin: 0 auto;
+padding: 40px 20px 80px;
+position: relative;
+z-index: 1;
+}
+
+/* HEADER */
+header {
+text-align: center;
+margin-bottom: 50px;
+animation: fadeDown 0.7s ease both;
+}
+
+.tag {
+display: inline-block;
+background: var(–purple);
+color: white;
+font-size: 0.75rem;
+font-weight: 800;
+letter-spacing: 2px;
+text-transform: uppercase;
+padding: 5px 14px;
+border-radius: 20px;
+margin-bottom: 14px;
+}
+
+h1 {
+font-family: ‘Fredoka One’, cursive;
+font-size: clamp(2.5rem, 7vw, 4.5rem);
+line-height: 1;
+color: var(–yellow);
+text-shadow: 4px 4px 0 rgba(255,209,102,0.2);
+margin-bottom: 12px;
+}
+
+header p {
+font-size: 1.1rem;
+color: var(–text);
+max-width: 500px;
+margin: 0 auto;
+}
+
+/* PROGRESS BAR (decorative) */
+.progress-row {
+display: flex;
+gap: 6px;
+justify-content: center;
+margin-top: 20px;
+}
+.dot {
+width: 10px; height: 10px;
+border-radius: 50%;
+background: var(–card);
+border: 2px solid var(–purple);
+cursor: pointer;
+transition: background 0.2s, transform 0.2s;
+}
+.dot.active { background: var(–yellow); border-color: var(–yellow); transform: scale(1.3); }
+
+/* CARDS */
+.section {
+margin-bottom: 40px;
+animation: fadeUp 0.6s ease both;
+}
+.section:nth-child(1) { animation-delay: 0.1s; }
+.section:nth-child(2) { animation-delay: 0.2s; }
+.section:nth-child(3) { animation-delay: 0.3s; }
+.section:nth-child(4) { animation-delay: 0.4s; }
+.section:nth-child(5) { animation-delay: 0.5s; }
+.section:nth-child(6) { animation-delay: 0.6s; }
+
+.section-label {
+font-size: 0.7rem;
+font-weight: 800;
+letter-spacing: 3px;
+text-transform: uppercase;
+margin-bottom: 10px;
+opacity: 0.6;
+}
+
+.card {
+background: var(–card);
+border-radius: 20px;
+padding: 28px;
+border: 2px solid transparent;
+transition: transform 0.2s, border-color 0.2s;
+position: relative;
+overflow: hidden;
+}
+.card:hover { transform: translateY(-3px); }
+
+.card.yellow  { border-color: var(–yellow); }
+.card.mint    { border-color: var(–mint); }
+.card.pink    { border-color: var(–pink); }
+.card.blue    { border-color: var(–blue); }
+.card.purple  { border-color: var(–purple); }
+.card.orange  { border-color: var(–orange); }
+
+.card h2 {
+font-family: ‘Fredoka One’, cursive;
+font-size: 1.6rem;
+margin-bottom: 10px;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.card.yellow h2 { color: var(–yellow); }
+.card.mint h2   { color: var(–mint); }
+.card.pink h2   { color: var(–pink); }
+.card.blue h2   { color: var(–blue); }
+.card.purple h2 { color: var(–purple); }
+.card.orange h2 { color: var(–orange); }
+
+.card p {
+color: var(–text);
+font-size: 1rem;
+line-height: 1.7;
+margin-bottom: 14px;
+}
+.card p:last-child { margin-bottom: 0; }
+
+/* FORMULA BOX */
+.formula {
+background: rgba(255,255,255,0.06);
+border-radius: 12px;
+padding: 16px 22px;
+margin: 16px 0;
+font-size: 1.15rem;
+font-weight: 700;
+letter-spacing: 0.5px;
+text-align: center;
+line-height: 1.9;
+border-left: 4px solid currentColor;
+}
+.card.yellow .formula { color: var(–yellow); border-left-color: var(–yellow); }
+.card.mint .formula   { color: var(–mint);   border-left-color: var(–mint); }
+.card.pink .formula   { color: var(–pink);   border-left-color: var(–pink); }
+.card.blue .formula   { color: var(–blue);   border-left-color: var(–blue); }
+.card.purple .formula { color: var(–purple); border-left-color: var(–purple); }
+.card.orange .formula { color: var(–orange); border-left-color: var(–orange); }
+
+/* REMEMBER BOX */
+.remember {
+display: flex;
+align-items: flex-start;
+gap: 12px;
+background: rgba(255,255,255,0.04);
+border-radius: 12px;
+padding: 14px 18px;
+margin-top: 14px;
+font-size: 0.95rem;
+color: var(–text);
+}
+.remember .icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+
+/* EXAMPLE */
+.example {
+background: rgba(255,255,255,0.04);
+border-radius: 12px;
+padding: 14px 18px;
+margin-top: 14px;
+font-size: 0.95rem;
+}
+.example-label {
+font-size: 0.7rem;
+font-weight: 800;
+text-transform: uppercase;
+letter-spacing: 2px;
+opacity: 0.5;
+margin-bottom: 6px;
+}
+.example p { font-size: 0.95rem; margin-bottom: 6px; }
+
+/* GRID for two columns */
+.two-col {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 16px;
+}
+@media (max-width: 600px) {
+.two-col { grid-template-columns: 1fr; }
+}
+
+/* MINI CARD */
+.mini-card {
+background: var(–card);
+border-radius: 16px;
+padding: 20px;
+border: 2px solid;
+transition: transform 0.2s;
+}
+.mini-card:hover { transform: translateY(-3px); }
+.mini-card h3 {
+font-family: ‘Fredoka One’, cursive;
+font-size: 1.2rem;
+margin-bottom: 8px;
+}
+.mini-card p { font-size: 0.9rem; color: var(–text); line-height: 1.6; }
+.mini-card .formula { font-size: 0.95rem; }
+
+.mini-card.mint   { border-color: var(–mint);   }
+.mini-card.mint h3  { color: var(–mint); }
+.mini-card.orange { border-color: var(–orange); }
+.mini-card.orange h3 { color: var(–orange); }
+.mini-card.pink   { border-color: var(–pink);   }
+.mini-card.pink h3  { color: var(–pink); }
+.mini-card.blue   { border-color: var(–blue);   }
+.mini-card.blue h3  { color: var(–blue); }
+
+/* QUIZ */
+.quiz-card {
+background: var(–card);
+border: 2px solid var(–purple);
+border-radius: 20px;
+padding: 28px;
+}
+.quiz-card h2 {
+font-family: ‘Fredoka One’, cursive;
+font-size: 1.6rem;
+color: var(–purple);
+margin-bottom: 6px;
+}
+.quiz-card p { color: var(–text); font-size: 0.95rem; margin-bottom: 20px; }
+
+.quiz-q {
+background: rgba(255,255,255,0.05);
+border-radius: 14px;
+padding: 18px;
+margin-bottom: 14px;
+}
+.quiz-q p { color: white; font-weight: 700; margin-bottom: 12px; font-size: 1rem; }
+
+.options {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+}
+.opt-btn {
+background: rgba(255,255,255,0.07);
+color: white;
+border: 2px solid rgba(255,255,255,0.15);
+border-radius: 10px;
+padding: 8px 16px;
+font-family: ‘Nunito’, sans-serif;
+font-size: 0.9rem;
+font-weight: 700;
+cursor: pointer;
+transition: background 0.2s, border-color 0.2s, transform 0.1s;
+}
+.opt-btn:hover { transform: scale(1.03); }
+.opt-btn.correct { background: rgba(6,214,160,0.2); border-color: var(–mint); color: var(–mint); }
+.opt-btn.wrong   { background: rgba(239,71,111,0.2); border-color: var(–pink); color: var(–pink); }
+.opt-btn:disabled { cursor: default; transform: none; }
+
+.feedback {
+margin-top: 10px;
+font-size: 0.88rem;
+font-weight: 600;
+display: none;
+border-radius: 8px;
+padding: 8px 14px;
+}
+.feedback.show { display: block; }
+.feedback.correct { background: rgba(6,214,160,0.12); color: var(–mint); }
+.feedback.wrong   { background: rgba(239,71,111,0.12); color: var(–pink); }
+
+/* CHEAT SHEET */
+.cheat-sheet {
+background: linear-gradient(135deg, #1a1830 0%, #0f1825 100%);
+border: 2px solid var(–yellow);
+border-radius: 20px;
+padding: 28px;
+}
+.cheat-sheet h2 {
+font-family: ‘Fredoka One’, cursive;
+font-size: 1.6rem;
+color: var(–yellow);
+margin-bottom: 18px;
+text-align: center;
+}
+.cheat-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 10px 0;
+border-bottom: 1px solid rgba(255,255,255,0.07);
+gap: 10px;
+flex-wrap: wrap;
+}
+.cheat-row:last-child { border-bottom: none; }
+.cheat-name { font-weight: 800; font-size: 0.9rem; color: white; flex: 1; min-width: 120px; }
+.cheat-formula {
+font-size: 0.9rem;
+font-weight: 700;
+color: var(–yellow);
+background: rgba(255,209,102,0.08);
+padding: 6px 14px;
+border-radius: 8px;
+font-family: monospace;
+}
+
+/* ANIMATIONS */
+@keyframes fadeDown {
+from { opacity: 0; transform: translateY(-20px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(20px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+/* SCROLL TO TOP */
+.scroll-top {
+position: fixed;
+bottom: 24px; right: 24px;
+background: var(–purple);
+color: white;
+width: 46px; height: 46px;
+border-radius: 50%;
+border: none;
+font-size: 1.3rem;
+cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+box-shadow: 0 4px 20px rgba(155,93,229,0.4);
+transition: transform 0.2s;
+z-index: 100;
+}
+.scroll-top:hover { transform: scale(1.1); }
+
+/* visual dice decoration */
+.deco { font-size: 2rem; }
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <div class="tag">📚 ADHD-Friendly Study Guide</div>
+    <h1>Probability 🎲</h1>
+    <p>Short chunks. Bold formulas. Real examples. Zero fluff.</p>
+    <div class="progress-row">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </header>
+
+  <!-- 1. WHAT IS PROBABILITY -->
+
+  <div class="section">
+    <div class="section-label">Concept 1 · The Basics</div>
+    <div class="card yellow">
+      <h2><span class="deco">🎯</span> What is Probability?</h2>
+      <p>Probability measures <strong>how likely</strong> something is to happen — always a number between <strong>0</strong> (impossible) and <strong>1</strong> (certain).</p>
+      <div class="formula">P(Event) = Favorable Outcomes ÷ Total Possible Outcomes</div>
+      <div class="example">
+        <div class="example-label">Example</div>
+        <p>🎲 Rolling a 3 on a six-sided die:</p>
+        <p><strong>P(3) = 1 ÷ 6 ≈ 0.167 (about 17%)</strong></p>
+      </div>
+      <div class="remember">
+        <span class="icon">💡</span>
+        <span>Probabilities can be written as fractions, decimals, or percentages. They all say the same thing!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. COMPLEMENT -->
+
+  <div class="section">
+    <div class="section-label">Concept 2 · The Opposite</div>
+    <div class="card mint">
+      <h2><span class="deco">🔄</span> Complement Rule</h2>
+      <p>The probability that something <strong>does NOT</strong> happen equals 1 minus the probability it does happen.</p>
+      <div class="formula">P(not A) = 1 − P(A)</div>
+      <div class="example">
+        <div class="example-label">Example</div>
+        <p>🌦️ Chance of rain is 30% → P(no rain) = 1 − 0.3 = <strong>0.7 (70%)</strong></p>
+      </div>
+      <div class="remember">
+        <span class="icon">💡</span>
+        <span>P(A) + P(not A) always = 1. They must cover every possibility!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 & 4. ADDITION RULES -->
+
+  <div class="section">
+    <div class="section-label">Concept 3 · OR Rules</div>
+    <div class="two-col">
+      <div class="mini-card mint">
+        <h3>🤝 Mutually Exclusive</h3>
+        <p>Events that <strong>can't both happen</strong> at the same time (like rolling a 2 or a 5).</p>
+        <div class="formula" style="color:var(--mint); border-left-color:var(--mint);">P(A or B) = P(A) + P(B)</div>
+        <p style="color:var(--text); font-size:0.85rem; margin-top:10px;">🎲 P(2 or 5) = 1/6 + 1/6 = <strong>2/6</strong></p>
+      </div>
+      <div class="mini-card orange">
+        <h3>🔀 Can Overlap</h3>
+        <p>Events that <strong>can happen together</strong> (like drawing a red card or a face card).</p>
+        <div class="formula" style="color:var(--orange); border-left-color:var(--orange);">P(A or B) = P(A) + P(B) − P(A and B)</div>
+        <p style="color:var(--text); font-size:0.85rem; margin-top:10px;">Subtract overlap so you don't count it twice! 🃏</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 & 6. MULTIPLICATION RULES -->
+
+  <div class="section">
+    <div class="section-label">Concept 4 · AND Rules</div>
+    <div class="two-col">
+      <div class="mini-card blue">
+        <h3>🔗 Independent Events</h3>
+        <p>One event doesn't affect the other (like flipping a coin twice).</p>
+        <div class="formula" style="color:var(--blue); border-left-color:var(--blue);">P(A and B) = P(A) × P(B)</div>
+        <p style="color:var(--text); font-size:0.85rem; margin-top:10px;">🪙 P(H and H) = 0.5 × 0.5 = <strong>0.25</strong></p>
+      </div>
+      <div class="mini-card pink">
+        <h3>🔗 Dependent Events</h3>
+        <p>First event <strong>changes</strong> the odds for the second (like drawing cards without replacing).</p>
+        <div class="formula" style="color:var(--pink); border-left-color:var(--pink);">P(A and B) = P(A) × P(B|A)</div>
+        <p style="color:var(--text); font-size:0.85rem; margin-top:10px;">P(B|A) means "B given A already happened" 🃏</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONDITIONAL PROBABILITY -->
+
+  <div class="section">
+    <div class="section-label">Concept 5 · Given That...</div>
+    <div class="card blue">
+      <h2><span class="deco">🔍</span> Conditional Probability</h2>
+      <p>What's the probability of A, knowing B already happened? We <strong>narrow our sample space</strong> to just the outcomes where B is true.</p>
+      <div class="formula">P(A | B) = P(A and B) ÷ P(B)</div>
+      <div class="example">
+        <div class="example-label">Example</div>
+        <p>🃏 In a deck, P(King | face card) = P(King and face card) ÷ P(face card)</p>
+        <p>= (4/52) ÷ (12/52) = <strong>4/12 = 1/3 ≈ 33%</strong></p>
+      </div>
+      <div class="remember">
+        <span class="icon">💡</span>
+        <span>The vertical bar | just means "given that." Read P(A|B) as "probability of A given B."</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BAYES' THEOREM -->
+
+  <div class="section">
+    <div class="section-label">Concept 6 · Flip It!</div>
+    <div class="card pink">
+      <h2><span class="deco">🔁</span> Bayes' Theorem</h2>
+      <p>Lets you <strong>reverse</strong> a conditional probability. If you know P(B|A), you can find P(A|B).</p>
+      <div class="formula">P(A | B) = [P(B | A) × P(A)] ÷ P(B)</div>
+      <div class="example">
+        <div class="example-label">Memory Hook</div>
+        <p>🧪 A medical test is positive. What's the chance you actually have the disease?<br>
+        <strong>Bayes lets you flip</strong> "chance of positive test given disease" → "chance of disease given positive test."</p>
+      </div>
+      <div class="remember">
+        <span class="icon">🧠</span>
+        <span>Bayes is powerful but tricky. Focus on <em>what you know</em> vs <em>what you want to find</em> — then plug in!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK QUIZ -->
+
+  <div class="section">
+    <div class="section-label">Check Yourself</div>
+    <div class="quiz-card">
+      <h2>⚡ Quick Quiz</h2>
+      <p>No pressure — just test what stuck! Click an answer to check it.</p>
+
+```
+  <!-- Q1 -->
+  <div class="quiz-q">
+    <p>Q1 · A bag has 4 red balls and 6 blue balls. What's P(red)?</p>
+    <div class="options">
+      <button class="opt-btn" onclick="answer(this, false, 'q1')">4/6</button>
+      <button class="opt-btn" onclick="answer(this, true, 'q1')">4/10</button>
+      <button class="opt-btn" onclick="answer(this, false, 'q1')">6/10</button>
+      <button class="opt-btn" onclick="answer(this, false, 'q1')">1/4</button>
+    </div>
+    <div class="feedback" id="q1-fb"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-q">
+    <p>Q2 · P(rain) = 0.4. What is P(no rain)?</p>
+    <div class="options">
+      <button class="opt-btn" onclick="answer(this, false, 'q2')">0.4</button>
+      <button class="opt-btn" onclick="answer(this, true, 'q2')">0.6</button>
+      <button class="opt-btn" onclick="answer(this, false, 'q2')">1.4</button>
+      <button class="opt-btn" onclick="answer(this, false, 'q2')">0.04</button>
+    </div>
+    <div class="feedback" id="q2-fb"></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-q">
+    <p>Q3 · Two fair coins are flipped. P(both heads) = ?</p>
+    <div class="options">
+      <button class="opt-btn" onclick="answer(this, false, 'q3')">1/2</button>
+      <button class="opt-btn" onclick="answer(this, false, 'q3')">1/3</button>
+      <button class="opt-btn" onclick="answer(this, true, 'q3')">1/4</button>
+      <button class="opt-btn" onclick="answer(this, false, 'q3')">3/4</button>
+    </div>
+    <div class="feedback" id="q3-fb"></div>
+  </div>
+
+</div>
+```
+
+  </div>
+
+  <!-- CHEAT SHEET -->
+
+  <div class="section">
+    <div class="section-label">Quick Reference</div>
+    <div class="cheat-sheet">
+      <h2>📋 Formula Cheat Sheet</h2>
+      <div class="cheat-row">
+        <div class="cheat-name">Basic Probability</div>
+        <div class="cheat-formula">P(A) = favorable / total</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-name">Complement</div>
+        <div class="cheat-formula">P(not A) = 1 − P(A)</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-name">OR (exclusive)</div>
+        <div class="cheat-formula">P(A or B) = P(A) + P(B)</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-name">OR (overlapping)</div>
+        <div class="cheat-formula">P(A or B) = P(A) + P(B) − P(A∩B)</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-name">AND (independent)</div>
+        <div class="cheat-formula">P(A and B) = P(A) × P(B)</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-name">AND (dependent)</div>
+        <div class="cheat-formula">P(A and B) = P(A) × P(B|A)</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-name">Conditional</div>
+        <div class="cheat-formula">P(A|B) = P(A∩B) / P(B)</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-name">Bayes' Theorem</div>
+        <div class="cheat-formula">P(A|B) = P(B|A)×P(A) / P(B)</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  function answer(btn, isCorrect, qId) {
+    const parent = btn.closest('.quiz-q');
+    const btns = parent.querySelectorAll('.opt-btn');
+    const fb = document.getElementById(qId + '-fb');
+    btns.forEach(b => b.disabled = true);
+    if (isCorrect) {
+      btn.classList.add('correct');
+      fb.textContent = '✅ Correct! Great job!';
+      fb.className = 'feedback show correct';
+    } else {
+      btn.classList.add('wrong');
+      fb.textContent = '❌ Not quite — try reviewing the formula above!';
+      fb.className = 'feedback show wrong';
+      // highlight correct
+      btns.forEach(b => {
+        b.onclick && b.getAttribute('onclick').includes('true') && b.classList.add('correct');
+      });
+    }
+  }
+
+  // progress dots
+  const dots = document.querySelectorAll('.dot');
+  const sections = document.querySelectorAll('.section');
+  window.addEventListener('scroll', () => {
+    let idx = 0;
+    sections.forEach((s, i) => {
+      if (window.scrollY + window.innerHeight / 2 > s.offsetTop) idx = i;
+    });
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  });
+</script>
+
+</body>
+</html>
